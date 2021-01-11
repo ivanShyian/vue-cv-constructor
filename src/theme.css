@@ -237,11 +237,14 @@ h3 {
 }
 
 .alert {
+    max-width: 20%;
+    margin: 1rem auto;
     padding: 1rem 1.5rem;
     border-left-width: .5rem;
     border-left-style: solid;
-    margin: 1rem 0;
-    position: relative;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
     border-bottom-right-radius: 2px;
     border-top-right-radius: 2px;
 }

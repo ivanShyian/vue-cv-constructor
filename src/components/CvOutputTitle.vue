@@ -1,5 +1,5 @@
 <template>
-  <h1>Резюме {{inputValue}}</h1>
+  <h1>{{inputValue}}</h1>
 </template>
 <script>
 export default {

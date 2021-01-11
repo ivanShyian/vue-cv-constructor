@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <p v-if="true">
+    <p v-if="!comments" style="text-align: center">
       <button class="btn primary">Загрузить комментарии</button>
     </p>
     <div class="card" v-else>
@@ -19,7 +19,15 @@
 </template>
 
 <script>
-export default {}
+export default {
+  props: {
+    comments: {
+      type: Object,
+      required: false,
+      default: null
+    }
+  }
+}
 </script>
 
 <style scoped>

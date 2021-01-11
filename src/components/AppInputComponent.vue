@@ -1,33 +1,54 @@
 <template>
-  <form class="card card-w30" @submit.prevent="$emit('submitForm')">
-    <div class="form-control">
-      <label for="type">Тип блока</label>
-      <select id="type"
-              :value="blockValue"
-              @input="changeBlockValue">
-        <option value="title">Заголовок</option>
-        <option value="subtitle">Подзаголовок</option>
-        <option value="avatar">Аватар</option>
-        <option value="text">Текст</option>
-      </select>
-    </div>
+  <div class="card card-w30">
+    <form @submit.prevent="$emit('submitForm')">
+      <div class="form-control">
+        <label for="type">Тип блока</label>
+        <select id="type"
+                :value="blockValue"
+                @input="changeBlockValue">
+          <option value="title">Заголовок</option>
+          <option value="subtitle">Подзаголовок</option>
+          <option value="avatar">Аватар</option>
+          <option value="text">Текст</option>
+        </select>
+      </div>
 
-    <div class="form-control">
-      <label for="value">Значение</label>
-      <textarea id="value"
-                rows="3"
-                :value="userModelValue"
-                @input="changeTextValue"
-                :class="error ? 'invalid' : ''"></textarea>
-      <small v-if="error">{{ error }}</small>
-    </div>
-    <button class="btn primary" :disabled="disabledValue">Добавить</button>
-  </form>
+      <div class="form-control">
+        <label for="value">Значение</label>
+        <textarea id="value"
+                  rows="3"
+                  :value="userModelValue"
+                  @input="changeTextValue"></textarea>
+      </div>
+      <button class="btn primary" :disabled="disabledValue">Добавить</button>
+    </form>
+    <button class="btn danger"
+            :disabled="!blockLength"
+            @click="$emit('clear')">Очистить резюме
+    </button>
+  </div>
 </template>
 
 <script>
 export default {
-  emits: ['update:userModelValue', 'update:blockValue', 'submitForm'],
+  emits: {
+    'update:userModelValue': {
+      type: String,
+      required: true
+    },
+    'update:blockValue': {
+      type: String,
+      required: true
+    },
+    clear: {
+      type: Function,
+      required: true
+    },
+    submitForm: {
+      type: Function,
+      required: true
+    }
+  },
   props: {
     userModelValue: {
       type: String,
@@ -37,10 +58,9 @@ export default {
       type: String,
       required: true
     },
-    error: {
-      type: String,
-      required: false,
-      default: null
+    blockLength: {
+      type: Boolean,
+      required: true
     },
     disabledValue: {
       type: Boolean,
@@ -58,7 +78,10 @@ export default {
 }
 </script>
 <style scoped>
-div.form-control textarea.invalid {
-  border-color: red;
+.card.card-w30 form {
+  margin: 0 0 1rem 0;
+}
+.card.card-w30 button {
+  width: 100%;
 }
 </style>
