@@ -21,7 +21,7 @@
                 :class="error ? 'invalid' : ''"></textarea>
       <small v-if="error">{{ error }}</small>
     </div>
-    <button class="btn primary">Добавить</button>
+    <button class="btn primary" :disabled="disabledValue">Добавить</button>
   </form>
 </template>
 
@@ -29,16 +29,23 @@
 export default {
   emits: ['update:userModelValue', 'update:blockValue', 'submitForm'],
   props: {
-    userModelValue: String,
-    blockValue: String,
+    userModelValue: {
+      type: String,
+      required: true
+    },
+    blockValue: {
+      type: String,
+      required: true
+    },
     error: {
       type: String,
       required: false,
       default: null
+    },
+    disabledValue: {
+      type: Boolean,
+      required: true
     }
-  },
-  data () {
-    return {}
   },
   methods: {
     changeBlockValue (e) {

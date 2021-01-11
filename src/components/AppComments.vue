@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <p>
+    <p v-if="true">
       <button class="btn primary">Загрузить комментарии</button>
     </p>
-    <div class="card">
+    <div class="card" v-else>
       <h2>Комментарии</h2>
       <ul class="list">
         <li class="list-item">

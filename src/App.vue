@@ -3,40 +3,52 @@
     <app-input-component v-model:userModelValue.trim="userInput"
                          v-model:blockValue="blockType"
                          @submitForm="submitInput"
-                         :error="errorMessage">
+                         :error="errorMessage"
+                         :disabledValue="submitButton">
     </app-input-component>
-    <app-cv-output></app-cv-output>
-    <!--  <app-comments></app-comments>-->
+    <app-cv-output :block="buildBlock"></app-cv-output>
   </div>
-
+<!--  <app-comments></app-comments>-->
 </template>
 
 <script>
+import AppInputComponent from '@/components/AppInputComponent'
+import AppCvOutput from '@/components/AppCvOutput'
+// import AppComments from '@/components/AppComments'
+
 export default {
   data () {
     return {
       blockType: 'title',
       userInput: '',
-      errorMessage: null
+      errorMessage: null,
+      buildBlock: []
+    }
+  },
+  computed: {
+    submitButton () {
+      return this.userInput.length < 4
     }
   },
   methods: {
     submitInput () {
       if (this.userInput.length === 0) {
         this.errorMessage = 'Поле не может быть пустым'
-      } else if (this.userInput.length < 3) {
-        this.blockType = 'title'
-        this.userInput = ''
-        this.errorMessage = 'Поле ожидает не менее 3 символов'
       } else {
         this.errorMessage = null
-        console.log(this.blockType)
-        console.log(this.userInput)
-        console.log(this.errorMessage)
+        this.buildBlock.push({
+          type: this.blockType,
+          input: this.userInput
+        })
         this.blockType = 'title'
         this.userInput = ''
       }
     }
+  },
+  components: {
+    AppInputComponent,
+    AppCvOutput
+    // AppComments
   }
 }
 </script>
