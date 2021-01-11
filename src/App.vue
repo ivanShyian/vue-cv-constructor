@@ -1,26 +1,55 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container column">
+    <app-input-component v-model:userModelValue.trim="userInput"
+                         v-model:blockValue="blockType"
+                         @submitForm="submitInput"
+                         :error="errorMessage">
+    </app-input-component>
+    <app-cv-output></app-cv-output>
+    <!--  <app-comments></app-comments>-->
+  </div>
+
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data () {
+    return {
+      blockType: 'title',
+      userInput: '',
+      errorMessage: null
+    }
+  },
+  methods: {
+    submitInput () {
+      if (this.userInput.length === 0) {
+        this.errorMessage = 'Поле не может быть пустым'
+      } else if (this.userInput.length < 3) {
+        this.blockType = 'title'
+        this.userInput = ''
+        this.errorMessage = 'Поле ожидает не менее 3 символов'
+      } else {
+        this.errorMessage = null
+        console.log(this.blockType)
+        console.log(this.userInput)
+        console.log(this.errorMessage)
+        this.blockType = 'title'
+        this.userInput = ''
+      }
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.avatar {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar img {
+  width: 150px;
+  height: auto;
+  border-radius: 50%;
 }
 </style>
