@@ -1,6 +1,6 @@
 <template>
   <div class="card card-w30">
-    <form @submit.prevent="$emit('submitForm')">
+    <form @submit.prevent="$emit('submit-form')">
       <div class="form-control">
         <label for="type">Тип блока</label>
         <select id="type"
@@ -44,7 +44,7 @@ export default {
       type: Function,
       required: true
     },
-    submitForm: {
+    'submit-form': {
       type: Function,
       required: true
     }

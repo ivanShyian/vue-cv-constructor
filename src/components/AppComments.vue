@@ -1,15 +1,17 @@
 <template>
   <div class="container">
-    <p v-if="!comments" style="text-align: center">
-      <button class="btn primary">Загрузить комментарии</button>
+    <p v-if="comments.length === 0" style="text-align: center">
+      <button class="btn primary" @click="$emit('load-comments')">Загрузить комментарии</button>
     </p>
     <div class="card" v-else>
       <h2>Комментарии</h2>
       <ul class="list">
-        <li class="list-item">
+        <li class="list-item"
+            v-for="comment in comments"
+            :key="comment.id">
           <div>
-            <p><strong>test@microsoft.com</strong></p>
-            <small>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi, reiciendis.</small>
+            <p><strong>{{ comment.email }}</strong></p>
+            <small>{{ comment.name }}</small>
           </div>
         </li>
       </ul>
@@ -22,7 +24,14 @@
 export default {
   props: {
     comments: {
-      type: Object,
+      type: Array,
+      required: false,
+      default: Array
+    }
+  },
+  emits: {
+    'load-comments': {
+      type: Function,
       required: false,
       default: null
     }

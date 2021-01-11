@@ -3,14 +3,14 @@
   <div class="container column">
     <app-input-component v-model:userModelValue.trim="userInput"
                          v-model:blockValue="blockType"
-                         @submitForm="submitInput"
+                         @submit-form="submitInput"
                          @clear="clearResume"
                          :blockLength="hasData"
                          :disabledValue="submitButton">
     </app-input-component>
     <app-cv-output :block="buildBlock"></app-cv-output>
   </div>
-  <app-comments :comments="comments"></app-comments>
+  <app-comments :comments="comments" @load-comments="getComments"></app-comments>
 </template>
 
 <script>
@@ -27,7 +27,7 @@ export default {
       userInput: '',
       buildBlock: [],
       error: null,
-      comments: null
+      comments: []
     }
   },
   mounted () {
@@ -106,6 +106,16 @@ export default {
         setTimeout(() => {
           this.error = null
         }, 2000)
+      }
+    },
+    async getComments () {
+      try {
+        const { data } = await axios.get('https://jsonplaceholder.typicode.com/comments?_limit=42')
+        if (!data) {
+          throw new Error('Невозможно загрузить комментарии')
+        }
+        this.comments = data
+      } catch (e) {
       }
     }
   },
