@@ -1,5 +1,5 @@
 <template>
-  <div class="card card-w70">
+  <div class="card card-w70" v-if="block">
     <div v-if="block.length">
       <div v-for="item in block" :key="item">
         <component :is="'cv-output-' + item.type" :inputValue="item.input"></component>
@@ -23,11 +23,6 @@ export default {
       default: Array
     }
   },
-  data () {
-    return {}
-  },
-  computed: {},
-  methods: {},
   components: {
     CvOutputTitle,
     CvOutputSubtitle,

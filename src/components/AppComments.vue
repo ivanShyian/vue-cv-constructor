@@ -1,7 +1,8 @@
 <template>
-  <div class="container">
-    <p v-if="comments.length === 0" style="text-align: center">
-      <button class="btn primary" @click="$emit('load-comments')">Загрузить комментарии</button>
+  <div class="loader" v-if="loading"></div>
+  <div class="container" v-else>
+    <p v-if="!comments.length" style="text-align: center">
+      <button class="btn primary" @click="loader">Загрузить комментарии</button>
     </p>
     <div class="card" v-else>
       <h2>Комментарии</h2>
@@ -16,7 +17,6 @@
         </li>
       </ul>
     </div>
-    <div class="loader"></div>
   </div>
 </template>
 
@@ -33,7 +33,26 @@ export default {
     'load-comments': {
       type: Function,
       required: false,
-      default: null
+      default: Function
+    }
+  },
+  data () {
+    return {
+      getData: this.comments,
+      loading: false
+    }
+  },
+  watch: {
+    comments (value, oldValue) {
+      if (value !== oldValue) {
+        this.loading = false
+      }
+    }
+  },
+  methods: {
+    loader () {
+      this.$emit('load-comments')
+      this.loading = true
     }
   }
 }

@@ -1,16 +1,20 @@
 <template>
-  <app-error v-if="error" :error="error"></app-error>
-  <div class="container column">
-    <app-input-component v-model:userModelValue.trim="userInput"
-                         v-model:blockValue="blockType"
-                         @submit-form="submitInput"
-                         @clear="clearResume"
-                         :blockLength="hasData"
-                         :disabledValue="submitButton">
-    </app-input-component>
-    <app-cv-output :block="buildBlock"></app-cv-output>
+  <div v-if="!loading">
+    <app-error v-if="alert" :error="alert"></app-error>
+    <div class="container column">
+      <app-input-component v-model:userModelValue.trim="userInput"
+                           v-model:blockValue="blockType"
+                           @submit-form="submitInput"
+                           @clear="clearResume"
+                           :blockLength="blockLength"
+                           :disabledValue="submitButton">
+      </app-input-component>
+      <app-cv-output :block="buildBlock"></app-cv-output>
+    </div>
+    <app-comments :comments="comments"
+                  @load-comments="getComments"></app-comments>
   </div>
-  <app-comments :comments="comments" @load-comments="getComments"></app-comments>
+  <div class="loader" v-else></div>
 </template>
 
 <script>
@@ -26,8 +30,10 @@ export default {
       blockType: 'title',
       userInput: '',
       buildBlock: [],
-      error: null,
-      comments: []
+      comments: [],
+      alert: {},
+      error: false,
+      loading: false
     }
   },
   mounted () {
@@ -37,7 +43,7 @@ export default {
     submitButton () {
       return this.userInput.length < 4
     },
-    hasData () {
+    blockLength () {
       return this.buildBlock.length > 0
     }
   },
@@ -55,22 +61,19 @@ export default {
           type: this.blockType,
           input: this.userInput
         })
+        this.alertMessage('primary', 'Успешно', 'Элемент добавлен успешно')
       } catch (e) {
-        this.error = {
-          type: 'danger',
-          title: 'JUST NO',
-          message: e.message
-        }
-        setTimeout(() => {
-          this.error = null
-        }, 2000)
+        this.error = true
+        this.alertMessage('danger', 'JUST NO', e.message)
       } finally {
         this.blockType = 'title'
         this.userInput = ''
+        this.clearAlert()
       }
     },
     async getData () {
       try {
+        this.loading = true
         const { data } = await axios.get('https://vue-cv-project-default-rtdb.europe-west1.firebasedatabase.app/resume.json')
         if (!data) {
           throw new Error('Данные отсутствуют')
@@ -82,30 +85,25 @@ export default {
             input: data[el].input
           }
         })
+        this.alertMessage('primary', 'Успешно', 'Данные успешно загружены')
       } catch (e) {
-        this.error = {
-          type: 'danger',
-          title: 'Ошибка',
-          message: e.message
-        }
-        setTimeout(() => {
-          this.error = null
-        }, 2000)
+        this.error = true
+        this.alertMessage('danger', 'Ошибка', e.message)
+      } finally {
+        this.loading = false
+        this.clearAlert()
       }
     },
     async clearResume () {
       try {
         await axios.delete('https://vue-cv-project-default-rtdb.europe-west1.firebasedatabase.app/resume.json')
         this.buildBlock = []
+        this.alertMessage('primary', 'Успешно', 'Резюме успешно очищенно')
       } catch (e) {
-        this.error = {
-          type: 'danger',
-          title: 'Что-то пошло не так..',
-          message: e.message
-        }
-        setTimeout(() => {
-          this.error = null
-        }, 2000)
+        this.error = true
+        this.alertMessage('danger', 'Что-то пошло не так..', e.message)
+      } finally {
+        this.clearAlert()
       }
     },
     async getComments () {
@@ -115,8 +113,25 @@ export default {
           throw new Error('Невозможно загрузить комментарии')
         }
         this.comments = data
+        this.alertMessage('primary', 'Успешно', 'Комментарии загружены успешно')
       } catch (e) {
+        this.alertMessage('danger', 'Что-то пошло не так..', e.message)
+      } finally {
+        this.clearAlert()
       }
+    },
+    alertMessage (type, title, message) {
+      this.alert = {
+        type,
+        title,
+        message
+      }
+    },
+    clearAlert () {
+      setTimeout(() => {
+        this.error = false
+        this.alert = {}
+      }, 2000)
     }
   },
   components: {
