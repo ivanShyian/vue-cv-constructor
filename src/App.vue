@@ -12,6 +12,7 @@
       <app-cv-output :block="buildBlock"></app-cv-output>
     </div>
     <app-comments :comments="comments"
+                  :alert="alert"
                   @load-comments="getComments"></app-comments>
   </div>
   <div class="loader" v-else></div>
@@ -150,7 +151,7 @@ export default {
 }
 
 .avatar img {
-  width: 150px;
+  width: 250px;
   height: auto;
   border-radius: 50%;
 }

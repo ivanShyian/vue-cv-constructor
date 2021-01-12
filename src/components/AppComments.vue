@@ -1,9 +1,18 @@
 <template>
-  <div class="loader" v-if="loading"></div>
+  <div class="loader" v-if="loading && !error"></div>
   <div class="container" v-else>
-    <p v-if="!comments.length" style="text-align: center">
+    <p style="text-align: center" v-if="!comments.length && !error">
       <button class="btn primary" @click="loader">Загрузить комментарии</button>
     </p>
+    <div class="card error-container" v-else-if="error">
+      <div>
+        <h3>{{ errorType.title }}</h3>
+        <p>{{ errorType.message }}</p>
+      </div>
+      <button class="btn primary"
+              @click="loader">Повторить запрос
+      </button>
+    </div>
     <div class="card" v-else>
       <h2>Комментарии</h2>
       <ul class="list">
@@ -27,6 +36,11 @@ export default {
       type: Array,
       required: false,
       default: Array
+    },
+    alert: {
+      type: Object,
+      required: false,
+      default: Object
     }
   },
   emits: {
@@ -38,13 +52,22 @@ export default {
   },
   data () {
     return {
-      getData: this.comments,
-      loading: false
+      loading: false,
+      error: false,
+      errorType: {}
     }
   },
   watch: {
     comments (value, oldValue) {
       if (value !== oldValue) {
+        this.loading = false
+        this.error = false
+      }
+    },
+    alert (value) {
+      if (value.type === 'danger') {
+        this.errorType = value
+        this.error = true
         this.loading = false
       }
     }
@@ -53,11 +76,16 @@ export default {
     loader () {
       this.$emit('load-comments')
       this.loading = true
+      this.error = false
     }
   }
 }
 </script>
 
 <style scoped>
-
+.error-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 </style>

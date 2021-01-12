@@ -242,7 +242,7 @@ h3 {
     padding: 1rem 1.5rem;
     border-left-width: .5rem;
     border-left-style: solid;
-    position: absolute;
+    position: fixed;
     top: 1rem;
     left: 1rem;
     border-bottom-right-radius: 2px;
